@@ -165,7 +165,7 @@ OCA_FORCE_PROD=
 | `PORT` | The port number of the server | `5420` |
 | `NODE_ENV` | Node environment | `development` |
 | `DEBUG` | Whether to enable debug mode | `true` |
-| `API_URL` | The URL of the API | `http://localhost:$PORT` |
+| `API_URL` | The URL of the API | `http://localhost:$PORT/backvtex` |
 | `FRONTEND_URL` | The URL of the frontend | `http://localhost:3000` |
 | `MONGODB_URL` | The URL of the Mongo DB | `mongodb://127.0.0.1:27017/carrier-vtex`|
 | `CRYPTOJS_SECRET_KEY` | The secret key for Crypto JS | `123456` |
@@ -208,7 +208,7 @@ OCA_FORCE_PROD=
 
 ### API Endpoints
 
-List of available routes (base path: `/api/v1`):
+List of available routes (base path: `/backvtex/api/v1`):
 
 **Auth routes**:\
 `GET /login` - App login\
