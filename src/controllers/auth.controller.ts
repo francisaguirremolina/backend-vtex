@@ -16,7 +16,7 @@ export const login = catchAsync(
 		if (!user || !timeSafeEqual(pass, user.password))
 			throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid credentials', 'onboarding.invalid-credentials');
 
-		await carrierService.getOperationalByUser(user.email, user.password);
+		await carrierService.getOperationalByUser('https://ocapartnerar.myvtex.com', 'QA123456');
 
 		const { _id: userId } = user;
 		const token = authService.getAuthToken(userId.toString());
