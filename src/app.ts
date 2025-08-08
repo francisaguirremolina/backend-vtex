@@ -30,6 +30,7 @@ configureEcommerce(OcaTypes.Ecommerce.VTEX);
 setConfigPdfDownload(ConfigPDFDownload, conexaCore.internalInterceptor);
 
 const app = express();
+const basePath = new URL(config.api.url).pathname.replace(/\/$/, '');
 
 // Set security HTTP headers
 app.use(helmet());
@@ -49,16 +50,18 @@ app.use(xss());
 app.use(ExpressMongoSanitize());
 
 // Health Check
-['/', '/health', '/health-check', '/healthcheck'].forEach((route) =>
-	app.get(route, (_req: Request, res: Response) => {
+['/', '/health', '/health-check', '/healthcheck'].forEach((route) => {
+	const handler = (_req: Request, res: Response) => {
 		res.status(200).json({
 			status: 'UP',
 			timestamp: new Date().toISOString(),
 			uptime: process.uptime(),
 			message: 'The Service Oca Vtex is healthy'
 		});
-	})
-);
+	};
+	app.get(route, handler);
+	if (basePath !== '') app.get(`${basePath}${route}`, handler);
+});
 
 if (config.env !== 'test') {
 	app.use(conexaCore.HttpLogger.successHandler);
@@ -66,7 +69,7 @@ if (config.env !== 'test') {
 }
 
 // routes
-app.use(routes);
+app.use(basePath || '/', routes);
 
 // handle error
 app.use(errorHandler);
