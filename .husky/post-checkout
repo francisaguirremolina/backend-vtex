@@ -1,0 +1,43 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BOLD='\033[1m'
+NORMAL='\033[0m'
+WHITE='\033[1;37m'
+RESET='\033[0m'
+
+BRANCH_REGEX="^(main|develop|feature\/.*|refactor\/.*|hotfix\/.*|release\/.*|fix\/.*|release\/.*|wip\/.*|revert\/.*|chore\/.*|docs\/.*|style\/.*|test\/.*|ci\/.*|build\/.*)$"
+
+# Validate branch name (e.g. feature/my-feature-branch)
+local_branch_name="$(git rev-parse --abbrev-ref HEAD)"
+
+
+# If branch name is not valid, checkout previous branch
+if ! [[ $local_branch_name =~ $BRANCH_REGEX ]]; then
+  # Checkout previous branch, delete current branch
+  git checkout -
+  git branch -D $local_branch_name
+
+  echo -e "${RED}${BOLD}============================================================"
+  echo -e "ERROR: '${local_branch_name}' is not a valid branch name. Use one of the following formats:${RESET}"
+  echo -e "  - ${GREEN}${BOLD}main${RESET}: Production"
+  echo -e "  - ${GREEN}${BOLD}develop${RESET}: Staging"
+  echo -e "  - ${GREEN}${BOLD}feature/*${RESET}: New feature"
+  echo -e "  - ${GREEN}${BOLD}refactor/*${RESET}: Code refactoring"
+  echo -e "  - ${GREEN}${BOLD}revert/*${RESET}: Revert to previous commit"
+  echo -e "  - ${GREEN}${BOLD}fix/*${RESET}: Bug fix"
+  echo -e "  - ${GREEN}${BOLD}wip/*${RESET}: Work in progress"
+  echo -e "  - ${GREEN}${BOLD}hotfix/*${RESET}: Hotfix"
+  echo -e "  - ${GREEN}${BOLD}ci/*${RESET}: Continuous integration"
+  echo -e "  - ${GREEN}${BOLD}build/*${RESET}: Build"
+  echo -e "${RED}${BOLD}============================================================${WHITE}${NORMAL}"
+  exit 1
+fi
+
+# If branch name is valid, continue
+echo -e "${GREEN}${BOLD}Branch name ${local_branch_name} is valid${WHITE}${NORMAL}"
+
+yarn install
