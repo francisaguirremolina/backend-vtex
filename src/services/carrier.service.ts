@@ -468,7 +468,12 @@ export const getOperationalByUser = async (email: string, password: string) => {
 		const forceProd = env === Environments.PRODUCTION ? true : api.oca.forceProd;
 		return await getOperationalsByUserTN(email, password, forceProd);
 	} catch (error) {
-		throw Error('Error in get operational by user.');
+		Logger.error('getOperationalByUserTN failed');
+		Logger.error(error);
+
+		if (error instanceof ApiError) throw error;
+
+		throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Error in get operational by user.');
 	}
 };
 
